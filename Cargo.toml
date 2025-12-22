@@ -2,6 +2,8 @@
 name = "vedit"
 version = "0.1.0"
 edition = "2024"
+description = "A tool that wraps auto-editor and ffmpeg for fast editing."
+license = "MIT"
 homepage = "https://github.com/alexandretrotel/vedit"
 documentation = "https://docs.rs/vedit"
 repository = "https://github.com/alexandretrotel/vedit"
