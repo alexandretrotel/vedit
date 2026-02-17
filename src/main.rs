@@ -1,30 +1,17 @@
-use clap::Parser;
-use std::path::{Path, PathBuf};
 use std::process::Command;
 
-#[derive(Parser, Debug)]
-#[command(author, version, about)]
-struct Args {
-    /// Input video file
-    input: PathBuf,
+use clap::Parser;
 
-    /// Margin in seconds (passed to auto-editor)
-    #[arg(long)]
-    margin: f32,
+use crate::{
+    cli::CliArgs,
+    utils::{altered_filename, format_status_error},
+};
 
-    /// Playback speed (e.g. 1.25, 1.5, 2.0)
-    #[arg(long)]
-    speed: f32,
+mod cli;
+mod utils;
 
-    /// Output filename
-    #[arg(long)]
-    output: PathBuf,
-}
-
-/// Runs auto-editor, ffmpeg, and outputs the altered video.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Args::parse();
-
+    let args = CliArgs::parse();
     let margin_arg = format!("{}sec", args.margin);
 
     let status = Command::new("auto-editor")
@@ -34,7 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .status()?;
 
     if !status.success() {
-        return Err("auto-editor failed".into());
+        return Err(format_status_error("auto-editor", status).into());
     }
 
     let altered = altered_filename(&args.input)?;
@@ -53,24 +40,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .status()?;
 
     if !status.success() {
-        return Err("ffmpeg failed".into());
+        return Err(format_status_error("ffmpeg", status).into());
     }
 
     Ok(())
-}
-
-/// Turns `video.mp4` into `video_ALTERED.mp4`
-fn altered_filename(input: &Path) -> Result<PathBuf, Box<dyn std::error::Error>> {
-    let stem = input
-        .file_stem()
-        .ok_or("Invalid input filename")?
-        .to_string_lossy();
-
-    let ext = input
-        .extension()
-        .ok_or("Missing file extension")?
-        .to_string_lossy();
-
-    let altered = input.with_file_name(format!("{stem}_ALTERED.{ext}"));
-    Ok(altered)
 }
