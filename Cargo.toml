@@ -3,10 +3,10 @@ name = "vedit"
 version = "0.1.1"
 edition = "2024"
 description = "A tool that wraps auto-editor and ffmpeg for fast editing."
-authors = ["atrtde"]
+authors = ["alexandretrotel"]
 documentation = "https://docs.rs/vedit"
-homepage = "https://github.com/atrtde/vedit"
-repository = "https://github.com/atrtde/vedit"
+homepage = "https://github.com/alexandretrotel/vedit"
+repository = "https://github.com/alexandretrotel/vedit"
 license = "GPL-3.0-or-later"
 
 [dependencies]
